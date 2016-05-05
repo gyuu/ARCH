@@ -241,7 +241,7 @@ module controller (/*AUTOARG*/
 		load_stall = 0;
 		fwd_m = 0;
 		
-		// 前 1 条指令
+		// 1 instruction before
 		if(wb_wen_exe && regw_addr_exe != 0) begin
 			if(rs_used && regw_addr_exe == addr_rs) begin
 				// read rs next to LW, have to stall 1 cycle.
@@ -267,7 +267,7 @@ module controller (/*AUTOARG*/
 			end
 		end
 		
-		// 前 2 条指令
+		// 2 instructions before
 		if(wb_wen_mem && regw_addr_mem != 0) begin
 			if(rs_used && regw_addr_mem == addr_rs) begin
 				// data read from memory(after 1 cycle stall)
@@ -295,13 +295,7 @@ module controller (/*AUTOARG*/
 			reg_stall = 0;
 	end
 
-	
-	always @(*) begin
-		branch_stall = 0;
-//		if (pc_src != PC_NEXT)
-//			branch_stall = 1;
-	end
-	
+
 	`ifdef DEBUG
 	reg debug_step_prev;
 	
