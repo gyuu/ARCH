@@ -172,7 +172,12 @@ module datapath (
 	assign
 		debug_data = debug_addr[5] ? debug_data_signal : debug_data_reg;
 	`endif
-	
+
+	reg [31:0] data_rs_id;
+	reg [31:0] data_rt_id;
+	reg [31:0] branch_target_id;
+	reg is_branch_id;
+
 	// IF stage
 	assign
 		inst_addr_next = inst_addr + 4;
@@ -193,12 +198,7 @@ module datapath (
 				inst_addr <= inst_addr_next;
 		end
 	end
-	
 
-	reg [31:0] data_rs_id;
-	reg [31:0] data_rt_id;
-	reg [31:0] branch_target_id;
-	reg is_branch_id;
 	
 	// ID stage
 	always @(posedge clk) begin
@@ -208,9 +208,6 @@ module datapath (
 			inst_data_id <= 0;
 			inst_addr_next_id <= 0;
 			
-			// new forwarding
-			data_rs_id <= 0;
-			data_rt_id <= 0;
 		end
 		else if (id_en) begin
 			id_valid <= if_valid;
@@ -275,7 +272,7 @@ module datapath (
 	
 	always @(*) begin
 		case (pc_src_ctrl)
-			PC_JUMP: branch_target_id <= {inst_addr_id[31:28], inst_data_id[25:0], 2'b0};
+			PC_JUMP: branch_target_id <= {inst_addr_next_id[31:28], inst_data_id[25:0], 2'b0};
 			PC_JR: branch_target_id <= data_rs_id;
 			PC_BEQ: branch_target_id <= (data_rs_id==data_rt_id)? (inst_addr_next_id + {data_imm[29:0], 2'b0}) :inst_addr_next_id;
 			PC_BNE: branch_target_id <= (data_rs_id!=data_rt_id)? (inst_addr_next_id + {data_imm[29:0], 2'b0}): inst_addr_next_id;
@@ -357,7 +354,7 @@ module datapath (
 		case (exe_b_src_exe)
 			EXE_B_RT: opb_exe = data_rt_exe;
 			EXE_B_IMM: opb_exe = data_imm_exe;
-			EXE_B_LINK: opb_exe = 32'h0;
+			EXE_B_LINK: opb_exe = 32'h4;
 			EXE_B_BRANCH: opb_exe = {data_imm_exe[29:0],2'b0};
 		endcase
 	end
