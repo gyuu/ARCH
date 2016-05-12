@@ -172,12 +172,12 @@ module datapath (
 	assign
 		debug_data = debug_addr[5] ? debug_data_signal : debug_data_reg;
 	`endif
-
+	
 	reg [31:0] data_rs_id;
 	reg [31:0] data_rt_id;
 	reg [31:0] branch_target_id;
 	reg is_branch_id;
-
+	
 	// IF stage
 	assign
 		inst_addr_next = inst_addr + 4;
@@ -198,8 +198,9 @@ module datapath (
 				inst_addr <= inst_addr_next;
 		end
 	end
-
 	
+
+
 	// ID stage
 	always @(posedge clk) begin
 		if (id_rst) begin

@@ -146,7 +146,7 @@ module controller (/*AUTOARG*/
 				pc_src = PC_JUMP;
 				exe_a_src = EXE_A_LINK;
 				exe_b_src = EXE_B_LINK;
-				exe_alu_oper = EXE_ALU_OR;
+				exe_alu_oper = EXE_ALU_ADD;
 				wb_addr_src = WB_ADDR_LINK;
 				wb_data_src = WB_DATA_ALU;
 				wb_wen = 1;
@@ -241,7 +241,7 @@ module controller (/*AUTOARG*/
 		load_stall = 0;
 		fwd_m = 0;
 		
-		// 1 instruction before
+		// 前 1 条指令
 		if(wb_wen_exe && regw_addr_exe != 0) begin
 			if(rs_used && regw_addr_exe == addr_rs) begin
 				// read rs next to LW, have to stall 1 cycle.
@@ -267,7 +267,7 @@ module controller (/*AUTOARG*/
 			end
 		end
 		
-		// 2 instructions before
+		// 前 2 条指令
 		if(wb_wen_mem && regw_addr_mem != 0) begin
 			if(rs_used && regw_addr_mem == addr_rs) begin
 				// data read from memory(after 1 cycle stall)
@@ -296,6 +296,8 @@ module controller (/*AUTOARG*/
 	end
 
 
+	
+	
 	`ifdef DEBUG
 	reg debug_step_prev;
 	
